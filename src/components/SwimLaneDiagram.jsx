@@ -509,7 +509,7 @@ export default function SwimLaneDiagram({
   const laneColors = {
     partner: partnerColor || '#F5F3FF',
     api:     '#FFF0F3',
-    backend: '#E6FBF7',
+    backend: '#FEFCE8',
   }
 
   return (

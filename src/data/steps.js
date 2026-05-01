@@ -190,7 +190,7 @@ export const PHASES = [
 ];
 
 export const PHASE_COLORS = [
-  '#EFF6FF', // blue-50
+  '#F8FAFC', // slate-50
   '#F0FDF4', // green-50
   '#FFF7ED', // orange-50
   '#FDF4FF', // purple-50
@@ -198,7 +198,7 @@ export const PHASE_COLORS = [
 ];
 
 export const PHASE_BORDER_COLORS = [
-  '#BFDBFE', // blue-200
+  '#CBD5E1', // slate-300
   '#BBF7D0', // green-200
   '#FED7AA', // orange-200
   '#E9D5FF', // purple-200
@@ -206,7 +206,7 @@ export const PHASE_BORDER_COLORS = [
 ];
 
 export const PHASE_TEXT_COLORS = [
-  '#1D4ED8', // blue-700
+  '#475569', // slate-600
   '#15803D', // green-700
   '#C2410C', // orange-700
   '#7E22CE', // purple-700
