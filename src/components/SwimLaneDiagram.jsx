@@ -256,8 +256,8 @@ function PhaseSection({ phase, phaseIndex }) {
       <line
         x1={x2} y1={TITLE_H}
         x2={x2} y2={TOTAL_H - FOOTER_H}
-        stroke={borderColor} strokeWidth={1}
-        strokeDasharray="4 3" opacity={0.7}
+        stroke="#6B7280" strokeWidth={1.5}
+        opacity={0.25}
       />
     </g>
   )
@@ -508,8 +508,8 @@ export default function SwimLaneDiagram({
 
   const laneColors = {
     partner: partnerColor || '#F5F3FF',
-    api:     '#F0F4F8',
-    backend: '#E8EAED',
+    api:     '#FFF0F3',
+    backend: '#E6FBF7',
   }
 
   return (

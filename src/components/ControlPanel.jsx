@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import tinyHealthLogo from '../public/PNG image.png'
 
 export default function ControlPanel({
   partnerName,
@@ -28,7 +29,7 @@ export default function ControlPanel({
     <div style={styles.panel}>
       <div style={styles.panelInner}>
         <div style={styles.brand}>
-          <div style={styles.brandMark}>TH</div>
+          <img src={tinyHealthLogo} alt="Tiny Health" style={styles.brandLogo} />
           <div>
             <div style={styles.brandTitle}>Swim Lane Creator</div>
             <div style={styles.brandSub}>Tiny Health Partner API</div>
@@ -102,19 +103,6 @@ export default function ControlPanel({
             </div>
           </Field>
 
-          <Field label="Optional Steps">
-            <label style={styles.toggleRow}>
-              <input
-                type="checkbox"
-                checked={showPhase2}
-                onChange={e => setShowPhase2(e.target.checked)}
-                style={styles.checkbox}
-              />
-              <span style={styles.toggleLabel}>
-                {showPhase2 ? 'Shown (dimmed)' : 'Hidden'}
-              </span>
-            </label>
-          </Field>
         </div>
 
         <div style={styles.divider} />
@@ -164,29 +152,22 @@ const styles = {
     overflowY: 'auto',
   },
   panelInner: {
-    padding: '20px 16px',
+    padding: '10px 8px',
     display: 'flex',
     flexDirection: 'column',
     gap: 0,
   },
   brand: {
     display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 12,
+    marginBottom: 24,
   },
-  brandMark: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    background: '#059669',
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 13,
-    fontWeight: 700,
-    flexShrink: 0,
+  brandLogo: {
+    height: 84,
+    width: 'auto',
+    objectFit: 'contain',
   },
   brandTitle: {
     fontSize: 14,
