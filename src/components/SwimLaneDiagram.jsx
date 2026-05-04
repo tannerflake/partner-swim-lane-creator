@@ -11,7 +11,7 @@ const LANE_H        = 270   // tall enough for expanded cards
 const CARD_PAD_TOP  = 20    // top margin within lane before card
 const TITLE_H       = 68
 const PHASE_H       = 32
-const FOOTER_H      = 44
+const FOOTER_H      = 68
 const NUM_COLS      = 17
 
 const LANE_Y = {
@@ -283,6 +283,10 @@ function StepCard({ step, showPhase2, partnerLogo }) {
   const gapAfterLabel = step.endpoint ? 4 : 6
   const gapAfterEP    = 5
 
+  const isApi     = step.lane === 'api'
+  const isBackend = step.lane === 'backend'
+  const accentColor = isApi ? '#4F46E5' : isBackend ? '#059669' : null
+
   return (
     <g opacity={opacity}>
       {/* Shadow */}
@@ -294,10 +298,26 @@ function StepCard({ step, showPhase2, partnerLogo }) {
         width={CARD_W} height={cardHeight}
         rx={8}
         fill="#FFFFFF"
-        stroke={dimmed ? '#D1D5DB' : '#E5E7EB'}
-        strokeWidth={1.5}
+        stroke={dimmed ? '#D1D5DB' : accentColor ?? '#E5E7EB'}
+        strokeWidth={accentColor ? 1.5 : 1.5}
         strokeDasharray={dimmed ? '5 3' : undefined}
       />
+
+      {/* Left accent bar for API (indigo) and Backend (green) cards */}
+      {accentColor && (
+        <>
+          {/* Clip the bar to the card's rounded shape */}
+          <clipPath id={`clip-${step.id}`}>
+            <rect x={b.x} y={b.y} width={CARD_W} height={cardHeight} rx={8} />
+          </clipPath>
+          <rect
+            x={b.x} y={b.y}
+            width={5} height={cardHeight}
+            fill={dimmed ? '#9CA3AF' : accentColor}
+            clipPath={`url(#clip-${step.id})`}
+          />
+        </>
+      )}
 
       {/* Step number — top-left corner */}
       <circle cx={b.x + 2} cy={b.y} r={10} fill={dimmed ? '#9CA3AF' : '#374151'} />
@@ -315,7 +335,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {labelLines.map((line, i) => (
         <text
           key={`label-${i}`}
-          x={b.x + 18}
+          x={b.x + (accentColor ? 22 : 18)}
           y={b.y + paddingTop + i * labelLineH}
           fontSize="12.5" fontWeight="600"
           fontFamily="Inter, sans-serif"
@@ -329,7 +349,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {endpointLines.map((line, i) => (
         <text
           key={`ep-${i}`}
-          x={b.x + 8}
+          x={b.x + (accentColor ? 12 : 8)}
           y={b.y + paddingTop + labelLines.length * labelLineH + gapAfterLabel + i * endpointLineH}
           fontSize="9" fontWeight="500"
           fontFamily="'JetBrains Mono', 'Courier New', monospace"
@@ -345,7 +365,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
         return (
           <text
             key={`desc-${i}`}
-            x={b.x + 8}
+            x={b.x + (accentColor ? 12 : 8)}
             y={b.y + paddingTop + labelLines.length * labelLineH + gapAfterLabel + epOffset + i * descLineH}
             fontSize="10"
             fontFamily="Inter, sans-serif"
@@ -600,23 +620,53 @@ export default function SwimLaneDiagram({
         <rect x={0} y={TOTAL_H - FOOTER_H} width={TOTAL_W} height={FOOTER_H} fill="#F9FAFB" />
         <line x1={0} y1={TOTAL_H - FOOTER_H} x2={TOTAL_W} y2={TOTAL_H - FOOTER_H} stroke="#E5E7EB" strokeWidth={1} />
 
-        {/* Legend */}
-        <line x1={LANE_HEADER_W} y1={TOTAL_H - FOOTER_H / 2} x2={LANE_HEADER_W + 24} y2={TOTAL_H - FOOTER_H / 2} stroke="#374151" strokeWidth={2} markerEnd="url(#ah-solid)" />
-        <text x={LANE_HEADER_W + 30} y={TOTAL_H - FOOTER_H / 2 + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">API Request</text>
+        {/* Legend — Row 1: arrows & badges */}
+        {(() => {
+          const r1y = TOTAL_H - FOOTER_H + 18
+          return (<>
+            <line x1={LANE_HEADER_W} y1={r1y} x2={LANE_HEADER_W + 24} y2={r1y} stroke="#374151" strokeWidth={2} markerEnd="url(#ah-solid)" />
+            <text x={LANE_HEADER_W + 30} y={r1y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">API Request</text>
 
-        <line x1={LANE_HEADER_W + 120} y1={TOTAL_H - FOOTER_H / 2} x2={LANE_HEADER_W + 144} y2={TOTAL_H - FOOTER_H / 2} stroke="#374151" strokeWidth={1.5} strokeDasharray="5 3" markerEnd="url(#ah-response)" />
-        <text x={LANE_HEADER_W + 150} y={TOTAL_H - FOOTER_H / 2 + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">API Response</text>
+            <line x1={LANE_HEADER_W + 120} y1={r1y} x2={LANE_HEADER_W + 144} y2={r1y} stroke="#374151" strokeWidth={1.5} strokeDasharray="5 3" markerEnd="url(#ah-response)" />
+            <text x={LANE_HEADER_W + 150} y={r1y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">API Response</text>
 
-        <line x1={LANE_HEADER_W + 255} y1={TOTAL_H - FOOTER_H / 2} x2={LANE_HEADER_W + 279} y2={TOTAL_H - FOOTER_H / 2} stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="6 4" markerEnd="url(#ah-optional)" />
-        <text x={LANE_HEADER_W + 285} y={TOTAL_H - FOOTER_H / 2 + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">Optional Flow</text>
+            <line x1={LANE_HEADER_W + 255} y1={r1y} x2={LANE_HEADER_W + 279} y2={r1y} stroke="#9CA3AF" strokeWidth={1.5} strokeDasharray="6 4" markerEnd="url(#ah-optional)" />
+            <text x={LANE_HEADER_W + 285} y={r1y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">Optional Flow</text>
 
-        <rect x={LANE_HEADER_W + 400} y={TOTAL_H - FOOTER_H / 2 - 8} width={58} height={16} rx={8} fill="#FEF3C7" stroke="#FCD34D" strokeWidth={1} />
-        <text x={LANE_HEADER_W + 429} y={TOTAL_H - FOOTER_H / 2} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontWeight="700" fontFamily="Inter, sans-serif" fill="#92400E">OPTIONAL</text>
-        <text x={LANE_HEADER_W + 464} y={TOTAL_H - FOOTER_H / 2 + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">= Optional endpoint</text>
+            <rect x={LANE_HEADER_W + 390} y={r1y - 8} width={58} height={16} rx={8} fill="#FEF3C7" stroke="#FCD34D" strokeWidth={1} />
+            <text x={LANE_HEADER_W + 419} y={r1y} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontWeight="700" fontFamily="Inter, sans-serif" fill="#92400E">OPTIONAL</text>
+            <text x={LANE_HEADER_W + 454} y={r1y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">= Optional endpoint</text>
 
-        <rect x={LANE_HEADER_W + 600} y={TOTAL_H - FOOTER_H / 2 - 8} width={46} height={16} rx={8} fill="#EDE9FE" stroke="#C4B5FD" strokeWidth={1} />
-        <text x={LANE_HEADER_W + 623} y={TOTAL_H - FOOTER_H / 2} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontWeight="700" fontFamily="Inter, sans-serif" fill="#6D28D9">↻ POLL</text>
-        <text x={LANE_HEADER_W + 652} y={TOTAL_H - FOOTER_H / 2 + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">= Use a cron job to poll for state change</text>
+            <rect x={LANE_HEADER_W + 590} y={r1y - 8} width={46} height={16} rx={8} fill="#EDE9FE" stroke="#C4B5FD" strokeWidth={1} />
+            <text x={LANE_HEADER_W + 613} y={r1y} textAnchor="middle" dominantBaseline="middle" fontSize="8" fontWeight="700" fontFamily="Inter, sans-serif" fill="#6D28D9">↻ POLL</text>
+            <text x={LANE_HEADER_W + 642} y={r1y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#6B7280">= Use a cron job to poll for state change</text>
+          </>)
+        })()}
+
+        {/* Legend — Row 2: card types */}
+        {(() => {
+          const r2y = TOTAL_H - FOOTER_H + 46
+          const cardH = 18
+          return (<>
+            {/* Partner action card */}
+            <rect x={LANE_HEADER_W} y={r2y - 9} width={28} height={cardH} rx={4} fill="#fff" stroke="#E5E7EB" strokeWidth={1.5} />
+            <text x={LANE_HEADER_W + 34} y={r2y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">Partner / App Action</text>
+
+            {/* API endpoint card */}
+            <rect x={LANE_HEADER_W + 170} y={r2y - 9} width={28} height={cardH} rx={4} fill="#fff" stroke="#4F46E5" strokeWidth={1.5} />
+            <rect x={LANE_HEADER_W + 170} y={r2y - 9} width={5} height={cardH} fill="#4F46E5">
+              <clipPath id="leg-api-clip"><rect x={LANE_HEADER_W + 170} y={r2y - 9} width={28} height={cardH} rx={4} /></clipPath>
+            </rect>
+            <rect x={LANE_HEADER_W + 170} y={r2y - 9} width={5} height={cardH} fill="#4F46E5" clipPath="url(#leg-api-clip)" />
+            <text x={LANE_HEADER_W + 204} y={r2y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">API Endpoint</text>
+
+            {/* Backend card */}
+            <rect x={LANE_HEADER_W + 300} y={r2y - 9} width={28} height={cardH} rx={4} fill="#fff" stroke="#059669" strokeWidth={1.5} />
+            <clipPath id="leg-be-clip"><rect x={LANE_HEADER_W + 300} y={r2y - 9} width={28} height={cardH} rx={4} /></clipPath>
+            <rect x={LANE_HEADER_W + 300} y={r2y - 9} width={5} height={cardH} fill="#059669" clipPath="url(#leg-be-clip)" />
+            <text x={LANE_HEADER_W + 334} y={r2y + 4} fontSize="10" fontFamily="Inter, sans-serif" fill="#374151">Tiny Health Internal Process</text>
+          </>)
+        })()}
 
         <text
           x={TOTAL_W - 16} y={TOTAL_H - FOOTER_H / 2 + 4}
