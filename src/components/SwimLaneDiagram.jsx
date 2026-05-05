@@ -298,24 +298,38 @@ function StepCard({ step, showPhase2, partnerLogo }) {
         width={CARD_W} height={cardHeight}
         rx={8}
         fill="#FFFFFF"
-        stroke={dimmed ? '#D1D5DB' : accentColor ?? '#E5E7EB'}
-        strokeWidth={accentColor ? 1.5 : 1.5}
+        stroke={dimmed ? '#D1D5DB' : (accentColor ? accentColor : '#E5E7EB')}
+        strokeWidth={1.5}
         strokeDasharray={dimmed ? '5 3' : undefined}
       />
 
-      {/* Left accent bar for API (indigo) and Backend (green) cards */}
+      {/* Left accent bar — API cards only */}
       {accentColor && (
         <>
-          {/* Clip the bar to the card's rounded shape */}
           <clipPath id={`clip-${step.id}`}>
             <rect x={b.x} y={b.y} width={CARD_W} height={cardHeight} rx={8} />
           </clipPath>
           <rect
             x={b.x} y={b.y}
-            width={5} height={cardHeight}
+            width={18} height={cardHeight}
             fill={dimmed ? '#9CA3AF' : accentColor}
             clipPath={`url(#clip-${step.id})`}
           />
+          {/* Rotated "API" label — only on API cards */}
+          {isApi && (
+            <g transform={`translate(${b.x + 9}, ${b.y + cardHeight / 2}) rotate(-90)`}>
+              <text
+                x={0} y={0}
+                textAnchor="middle" dominantBaseline="middle"
+                fontSize="9" fontWeight="700"
+                fontFamily="Inter, sans-serif"
+                fill="rgba(255,255,255,0.9)"
+                letterSpacing="0.12em"
+              >
+                API
+              </text>
+            </g>
+          )}
         </>
       )}
 
@@ -335,7 +349,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {labelLines.map((line, i) => (
         <text
           key={`label-${i}`}
-          x={b.x + (accentColor ? 22 : 18)}
+          x={b.x + (accentColor ? 26 : 18)}
           y={b.y + paddingTop + i * labelLineH}
           fontSize="12.5" fontWeight="600"
           fontFamily="Inter, sans-serif"
@@ -349,7 +363,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {endpointLines.map((line, i) => (
         <text
           key={`ep-${i}`}
-          x={b.x + (accentColor ? 12 : 8)}
+          x={b.x + (accentColor ? 22 : 8)}
           y={b.y + paddingTop + labelLines.length * labelLineH + gapAfterLabel + i * endpointLineH}
           fontSize="9" fontWeight="500"
           fontFamily="'JetBrains Mono', 'Courier New', monospace"
@@ -365,7 +379,7 @@ function StepCard({ step, showPhase2, partnerLogo }) {
         return (
           <text
             key={`desc-${i}`}
-            x={b.x + (accentColor ? 12 : 8)}
+            x={b.x + (accentColor ? 22 : 8)}
             y={b.y + paddingTop + labelLines.length * labelLineH + gapAfterLabel + epOffset + i * descLineH}
             fontSize="10"
             fontFamily="Inter, sans-serif"
@@ -400,12 +414,12 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {step.lane === 'partner' && partnerLogo && (
         <image
           href={partnerLogo}
-          x={b.x + CARD_W - 46}
-          y={b.y + cardHeight - 18}
-          width={40}
-          height={14}
+          x={b.x + CARD_W - 62}
+          y={b.y + cardHeight - 24}
+          width={56}
+          height={20}
           preserveAspectRatio="xMidYMid meet"
-          opacity={dimmed ? 0.4 : 0.55}
+          opacity={dimmed ? 0.4 : 0.6}
         />
       )}
 
@@ -413,12 +427,12 @@ function StepCard({ step, showPhase2, partnerLogo }) {
       {(step.lane === 'api' || step.lane === 'backend') && (
         <image
           href={thLogo}
-          x={b.x + CARD_W - 46}
-          y={b.y + cardHeight - 18}
-          width={40}
-          height={14}
+          x={b.x + CARD_W - 62}
+          y={b.y + cardHeight - 24}
+          width={56}
+          height={20}
           preserveAspectRatio="xMidYMid meet"
-          opacity={dimmed ? 0.4 : 0.55}
+          opacity={dimmed ? 0.4 : 0.6}
         />
       )}
 
